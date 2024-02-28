@@ -22,10 +22,17 @@
         padding: 10px 20px;
         width: fit-content;
         color: #4D4DFF;
-        font-size: medium;
+        font-size: 19px;
+        font-weight: bold;
         font-family: monospace;
         border-radius: 16px;
     }
+    @media only screen and (max-width: 600px) {
+  #razorpayButton {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
 </style>
 <body>
 
@@ -58,7 +65,7 @@
             // Define the Razorpay checkout options
             var options = {
                 key: 'rzp_test_IxRdN1xszdP8CR',
-                amount: 50000,
+                amount: 90000,
                 currency: 'INR',
                 name: 'Pay Here',
                 description: 'Product Based Service',
