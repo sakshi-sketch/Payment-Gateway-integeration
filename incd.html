@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Razorpay Checkout</title>
+  <!-- Include the Razorpay JavaScript library -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<style>
+    body{
+        background: url("bg-img.jpeg");
+        background-size:cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    #razorpayButton{
+        background-color: #fff;
+        padding: 10px 20px;
+        width: fit-content;
+        color: #4D4DFF;
+        font-size: medium;
+        font-family: monospace;
+        border-radius: 16px;
+    }
+</style>
+<body>
+
+<!-- Add a button or link to trigger Razorpay Checkout -->
+<div class="card">
+<button id="razorpayButton">Pay with Razorpay</button>
+</div>
+
+<!-- JavaScript -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    // Use an async function to handle asynchronous operations
+    document.getElementById('razorpayButton').addEventListener('click', async function() {
+        // Disable the button to prevent multiple clicks
+        document.getElementById('razorpayButton').disabled = true;
+
+        try {
+            // Make a POST request to your server to get the order ID
+            const response = await fetch('http://localhost:3000/create/orderId', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ amount: 50000 }), // Replace with the actual amount
+            });
+
+            const data = await response.json();
+            console.log('Received Order ID:', data.orderId);
+
+            // Define the Razorpay checkout options
+            var options = {
+                key: 'rzp_test_IxRdN1xszdP8CR',
+                amount: 50000,
+                currency: 'INR',
+                name: 'Pay Here',
+                description: 'Product Based Service',
+                order_id: data.orderId, // Use the received order ID
+                handler: function(response) {
+                    alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
+                },
+                prefill: {
+                    name: 'John Doe',
+                    email: 'john.doe@example.com',
+                    contact: '1234567890',
+                },
+                notes: {
+                    address: 'Shipping address',
+                },
+                theme: {
+                    color: '#528FF0',
+                },
+                // Add a callback function to enable the button after payment
+                callback: function() {
+                    document.getElementById('razorpayButton').disabled = false;
+                },
+            };
+
+            // Create a new instance of Razorpay and open the Checkout
+            var rzp = new Razorpay(options);
+            rzp.open();
+        } catch (error) {
+            // Handle errors, e.g., log to console or show an error message to the user
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+            document.getElementById('razorpayButton').disabled = false; // Enable the button in case of an error
+        }
+    });
+</script>
+
+</body>
+</html>
